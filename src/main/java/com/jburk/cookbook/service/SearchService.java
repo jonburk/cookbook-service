@@ -36,7 +36,7 @@ public class SearchService {
   private static final String FAVORITE = "favorite";
   private static final String VEGAN = "vegan";
   private static final String VEGETARIAN = "vegetarian";
-  private static final String WARN = "warn";
+  private static final String WARN = "-warn";
   private static final String IN_SEASON = "in season";
 
   private static final List<String> KEYWORDS = Arrays.asList(FAVORITE, VEGAN, VEGETARIAN, WARN, IN_SEASON);
@@ -138,6 +138,9 @@ public class SearchService {
               ingredientCount,
               excludedIngredients,
               excludedIngredientCount,
+              vegetarian,
+              vegan,
+              warn,
               favorite);
     }
 

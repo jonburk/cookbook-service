@@ -54,7 +54,17 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
           + " JOIN i.recipes ir"
           + " WHERE ir.id = r.id"
           + " AND i.name IN :excludedingredients"
-          + " GROUP BY ir.id))"          
+          + " GROUP BY ir.id))"   
+          /* Filter by ingredient characteristics */
+          + " AND ((:vegetarian = NULL AND :vegan = NULL AND :warn = NULL)"
+          + " OR NOT EXISTS"
+          + " (SELECT 1 FROM Ingredient i"
+          + " JOIN i.recipes ir"
+          + " WHERE ir.id = r.id"
+          + " AND (((:vegetarian = TRUE OR :vegan = TRUE) AND i.meat = TRUE)"
+          + " OR (:vegan = TRUE AND i.dairy = TRUE)"
+          + " OR (:warn = TRUE and i.warn = TRUE))"
+          + " GROUP BY ir.id))"
           /* Filter by favorites */
           + " AND (:favorite = NULL OR r.favorite = :favorite)")
   Page<Recipe> search(Pageable pgbl,
@@ -68,5 +78,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
           @Param("ingredientcount") Long ingredientCount,
           @Param("excludedingredients") Collection<String> excludedIngredients,
           @Param("excludedingredientcount") Long excludedIngredientCount,
+          @Param("vegetarian") Boolean vegetarian,
+          @Param("vegan") Boolean vegan,
+          @Param("warn") Boolean warn,
           @Param("favorite") Boolean favorite);
 }
