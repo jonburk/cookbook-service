@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Jonathan Burk. All rights reserved.
+ * Copyright (c) 2016-2017 Jonathan Burk. All rights reserved.
  */
 package com.jburk.cookbook.service;
 
@@ -9,9 +9,11 @@ import com.jburk.cookbook.domain.RecipeRepository;
 import com.jburk.cookbook.domain.SearchableNamedEntity;
 import com.jburk.cookbook.domain.SearchableNamedEntityRepository;
 import com.jburk.cookbook.domain.TagRepository;
+import com.jburk.cookbook.utils.Season;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,7 +39,7 @@ public class SearchService {
   private static final String VEGAN = "vegan";
   private static final String VEGETARIAN = "vegetarian";
   private static final String WARN = "-warn";
-  private static final String IN_SEASON = "in season";
+  private static final String IN_SEASON = "in season";          
 
   private static final List<String> KEYWORDS = Arrays.asList(FAVORITE, VEGAN, VEGETARIAN, WARN, IN_SEASON);
 
@@ -117,6 +119,12 @@ public class SearchService {
               vegan,
               warn,
               inSeason));
+      
+      // Add the tag for the current season
+      String season = null;
+      if (inSeason != null && inSeason) {
+        season = Season.findForYear(new Date()).getName();
+      }
 
       // The query will fail if the IN clause list is empty.
       // Get the size of the list and pad it with an empty string.
@@ -125,7 +133,6 @@ public class SearchService {
       long ingredientCount = getSizeAndPad(ingredients);
       long excludedIngredientCount = getSizeAndPad(excludedIngredients);
 
-      // TODO implement remaining keywords
       page = recipeRepository.search(
               pageRequest,
               title,
@@ -141,7 +148,9 @@ public class SearchService {
               vegetarian,
               vegan,
               warn,
-              favorite);
+              favorite,
+              season,
+              Season.NAMES);
     }
 
     return page;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Jonathan Burk. All rights reserved.
+ * Copyright (c) 2016-2017 Jonathan Burk. All rights reserved.
  */
 package com.jburk.cookbook.domain;
 
@@ -38,6 +38,21 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
           + " WHERE tr.id = r.id"
           + " AND t.name IN :excludedtags"
           + " GROUP BY tr.id))"
+          /* Filter by season */
+          + " AND (:season = NULL"
+          + " OR EXISTS"
+          + " (SELECT 1 FROM Tag t"
+          + " JOIN t.recipes tr"
+          + " WHERE tr.id = r.id"
+          + " AND t.name LIKE :season"
+          + " GROUP BY tr.id"
+          + " HAVING COUNT(DISTINCT t.name) = 1)"
+          + " OR NOT EXISTS"
+          + " (SELECT 1 FROM Tag t"
+          + " JOIN t.recipes tr"
+          + " WHERE tr.id = r.id"
+          + " AND t.name IN :seasons"
+          + " GROUP BY tr.id))"          
           /* Filter by included ingredients */
           + " AND (:ingredientcount = 0L"
           + " OR EXISTS"
@@ -81,5 +96,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
           @Param("vegetarian") Boolean vegetarian,
           @Param("vegan") Boolean vegan,
           @Param("warn") Boolean warn,
-          @Param("favorite") Boolean favorite);
+          @Param("favorite") Boolean favorite,
+          @Param("season") String season,
+          @Param("seasons") Collection<String> seasons);
 }
