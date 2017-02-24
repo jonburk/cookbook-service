@@ -1,8 +1,9 @@
 /*
- * Copyright (c) 2016 Jonathan Burk. All rights reserved.
+ * Copyright (c) 2016-2017 Jonathan Burk. All rights reserved.
  */
 package com.jburk.cookbook.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.Date;
@@ -71,6 +72,14 @@ public class Recipe implements Serializable {
           joinColumns = @JoinColumn(name = "recipeid", referencedColumnName = "recipeid"),
           inverseJoinColumns = @JoinColumn(name = "tagid", referencedColumnName = "tagid"))
   private Set<Tag> tags;
+  
+  @Lob
+  @JsonIgnore
+  private byte[] thumbnail;
+  
+  @Lob
+  @JsonIgnore
+  private byte[] photo;
 
   public Integer getId() {
     return id;
@@ -144,4 +153,20 @@ public class Recipe implements Serializable {
     this.tags = tags;
   }
 
+  public byte[] getThumbnail() {
+    return thumbnail;
+  }
+
+  public void setThumbnail(byte[] thumbnail) {
+    this.thumbnail = thumbnail;
+  }  
+
+  public byte[] getPhoto() {
+    return photo;
+  }
+
+  public void setPhoto(byte[] photo) {
+    this.photo = photo;
+  }
+  
 }

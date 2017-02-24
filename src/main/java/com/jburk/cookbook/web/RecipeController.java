@@ -6,12 +6,15 @@ package com.jburk.cookbook.web;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.jburk.cookbook.domain.Recipe;
 import com.jburk.cookbook.domain.Views;
+import com.jburk.cookbook.service.RecipeService;
 import com.jburk.cookbook.service.SearchService;
+import com.jburk.cookbook.utils.ImageUtils;
 import com.jburk.cookbook.utils.PagingUtils;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -32,10 +35,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class RecipeController {
 
+  private static final String MISSING_THUMBNAIL = "/images/NoThumbnail.png";
+  private static final String MISSING_PHOTO = "/images/NoPhoto.png";
+  
   @Autowired
   private SearchService searchService;
   
-  private final Logger log = LoggerFactory.getLogger(this.getClass());
+  @Autowired
+  private RecipeService recipeService;
+  
+  private final Logger log = LoggerFactory.getLogger(this.getClass());  
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -62,5 +71,19 @@ public class RecipeController {
     }
 
     return searchService.getSearchTerms(startsWith);
+  }
+  
+  @GET
+  @Produces("image/png")
+  @Path("{id}/thumbnail")
+  public Response getThumbnail(@PathParam("id") int id) {
+    return ImageUtils.createResponse(recipeService.getThumbnailById(id), MISSING_THUMBNAIL);
+  }
+  
+  @GET
+  @Produces("image/png")
+  @Path("{id}/photo")
+  public Response getPhoto(@PathParam("id") int id) {
+    return ImageUtils.createResponse(recipeService.getPhotoById(id), MISSING_PHOTO);
   }
 }
