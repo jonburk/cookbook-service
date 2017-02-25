@@ -16,7 +16,10 @@ import org.springframework.data.domain.Sort;
  */
 public class PagingUtils {
 
-  private static final String TOTAL_COUNT = "X-Total-Count";
+  /**
+   * Total count header name
+   */
+  public static final String TOTAL_COUNT = "X-Total-Count";
 
   /**
    * Creates a page request.

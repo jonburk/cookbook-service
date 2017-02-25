@@ -5,6 +5,7 @@ package com.jburk.cookbook.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.ApiModel;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
