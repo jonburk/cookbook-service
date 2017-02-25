@@ -54,9 +54,30 @@ public class RecipeController {
   private final Logger log = LoggerFactory.getLogger(this.getClass());  
   
   @GET
+  @Path("{id}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @JsonView(Views.RecipeDetail.class)
+  @ApiOperation(value = "Gets a recipe")
+  @ApiResponses({
+    @ApiResponse(
+            code = 200,
+            message = "Success",
+            response = Recipe.class),
+    @ApiResponse(
+            code = 404,
+            message = "Not found")
+  })
+  public Recipe getById(@ApiParam("Recipe ID") @PathParam("id") int id) {
+    return recipeService.getRecipeById(id);
+  }
+  
+  @GET
   @Produces(MediaType.APPLICATION_JSON)
   @JsonView(Views.SearchResults.class)
-  @ApiOperation(value = "Search recipes", notes = "Prefix a search term with '-' to exclude it.")
+  @ApiOperation(
+          value = "Search recipes", 
+          notes = "Searches recipe titles, ingredients, and tags."
+                  + " Prefix a search term with '-' to exclude it.")
   @ApiResponses({
     @ApiResponse(
             code = 200,
@@ -105,6 +126,14 @@ public class RecipeController {
   @Produces("image/png")
   @Path("{id}/thumbnail")
   @ApiOperation("Gets a recipe thumbnail")
+  @ApiResponses({
+    @ApiResponse(
+            code = 200,
+            message = "Success"),
+    @ApiResponse(
+            code = 404,
+            message = "Not found")
+  })  
   public Response getThumbnail(@ApiParam("Recipe ID") @PathParam("id") int id) {
     return ImageUtils.createResponse(recipeService.getThumbnailById(id), MISSING_THUMBNAIL);
   }
@@ -113,6 +142,14 @@ public class RecipeController {
   @Produces("image/png")
   @Path("{id}/photo")
   @ApiOperation("Gets a recipe photo")
+  @ApiResponses({
+    @ApiResponse(
+            code = 200,
+            message = "Success"),
+    @ApiResponse(
+            code = 404,
+            message = "Not found")
+  }) 
   public Response getPhoto(@ApiParam("Recipe ID") @PathParam("id") int id) {
     return ImageUtils.createResponse(recipeService.getPhotoById(id), MISSING_PHOTO);
   }
