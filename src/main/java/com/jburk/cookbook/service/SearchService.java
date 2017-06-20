@@ -165,6 +165,7 @@ public class SearchService {
     List<String> searchTerms = new ArrayList<>();
 
     searchTerms.addAll(KEYWORDS.stream()
+            .map(k -> k.replace("-", ""))
             .filter(k -> k.startsWith(startsWith.toLowerCase()))
             .collect(Collectors.toList()));
 
