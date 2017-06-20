@@ -30,6 +30,7 @@ import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 public class JerseyConfig extends ResourceConfig {
 
   public JerseyConfig() {
+    register(CorsFilter.class);
     register(RecipeController.class);
     
     BeanConfig swaggerConfig = new BeanConfig();
